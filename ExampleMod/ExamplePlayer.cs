@@ -609,6 +609,12 @@ namespace ExampleMod
 					item.stack = stack;
 				}
 			}
+			if (player.anglerQuestsFinished > 30 && Main.rand.NextBool((int)(quality * 200)))
+			{
+				Item pole = new Item();
+				pole.SetDefaults(mod.ItemType<Items.ExampleFishingPole>());
+				rewardItems.Add(pole);
+			}
 		}
 
 		public override void CatchFish(Item fishingRod, Item bait, int power, int liquidType, int poolSize, int worldLayer, int questFish, ref int caughtType, ref bool junk)

@@ -127,6 +127,7 @@
     <Compile Include="Items\ExampleDamageClass\Mundane.cs" />
     <Compile Include="Items\ExampleDrawTooltips.cs" />
     <Compile Include="Items\ExampleDye.cs" />
+    <Compile Include="Items\ExampleFishingPole.cs" />
     <Compile Include="Items\ExampleGlobalRecipe.cs" />
     <Compile Include="Items\ExampleHamaxe.cs" />
     <Compile Include="Items\ExampleHealingPotion.cs" />
@@ -214,6 +215,7 @@
     <Compile Include="Projectiles\ElementShield.cs" />
     <Compile Include="Projectiles\ExampleAnimatedPierce.cs" />
     <Compile Include="Projectiles\ExampleBehindTilesProjectile.cs" />
+    <Compile Include="Projectiles\ExampleBobber.cs" />
     <Compile Include="Projectiles\ExampleBullet.cs" />
     <Compile Include="Projectiles\ExampleCloneProjectile.cs" />
     <Compile Include="Projectiles\ExampleExplosive.cs" />
