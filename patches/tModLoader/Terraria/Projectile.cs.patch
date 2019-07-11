@@ -287,12 +287,12 @@
 +										if (flag5) // patch note: use local variable 'knockback', not knockBack
  										{
 -											NetMessage.SendData(28, -1, -1, null, i, (float)num8, this.knockBack, (float)this.direction, 1, 0, 0);
-+											NetMessage.SendData(28, -1, -1, null, i, (float)num8, knockback, (float)this.direction, 1, 0, 0);
++											NetMessage.SendData(28, -1, -1, null, i, (float)num8, knockback, hitDirection, 1, 0, 0);
  										}
  										else
  										{
 -											NetMessage.SendData(28, -1, -1, null, i, (float)num8, this.knockBack, (float)this.direction, 0, 0, 0);
-+											NetMessage.SendData(28, -1, -1, null, i, (float)num8, knockback, (float)this.direction, 0, 0, 0);
++											NetMessage.SendData(28, -1, -1, null, i, (float)num8, knockback, hitDirection, 0, 0, 0);
  										}
  									}
  									if (this.type >= 390 && this.type <= 392)
