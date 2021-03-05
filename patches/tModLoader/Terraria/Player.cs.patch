@@ -3664,6 +3664,28 @@
  			if (sItem.type == 1450 && Main.rand.Next(3) == 0) {
  				int num = -1;
  				float x = itemRectangle.X + Main.rand.Next(itemRectangle.Width);
+@@ -31457,7 +_,7 @@
+ 				}
+ 			}
+ 
+-			itemTime = (int)((float)item.useTime * pickSpeed);
++			ApplyItemTime(item, pickSpeed);
+ 		}
+ 
+ 		private void DamageTileWithShovel(Player user, Item item, int x, int y) {
+@@ -31479,6 +_,12 @@
+ 				specialToolUsageSettings2.UsageAction = UseShovel;
+ 				specialToolUsageSettings = specialToolUsageSettings2;
+ 			}
++			else if (ItemLoader.IsCustomMiningTool(sItem, this)) {
++				specialToolUsageSettings = new SpecialToolUsageSettings {
++					IsAValidTool = true,
++					UsageAction = ItemLoader.UseCustomMiningTool
++				};
++			}	 
+ 
+ 			if (sItem.pick <= 0 && sItem.axe <= 0 && sItem.hammer <= 0 && !specialToolUsageSettings.IsAValidTool)
+ 				return;
 @@ -31541,7 +_,7 @@
  			if (Main.tileHammer[tile.type]) {
  				canHitWalls = false;
@@ -3685,6 +3707,24 @@
  				if (sItem.axe > 0) {
  					AchievementsHelper.CurrentlyMining = true;
  					if (!WorldGen.CanKillTile(x, y))
+@@ -31601,7 +_,7 @@
+ 			}
+ 
+ 			if (sItem.pick > 0)
+-				itemTime = (int)((float)sItem.useTime * pickSpeed);
++				ApplyItemTime(sItem, pickSpeed);
+ 
+ 			ItemCheck_UseMiningTools_TryPoundingTile(sItem, num, ref canHitWalls, x, y);
+ 		}
+@@ -31702,7 +_,7 @@
+ 			if (num != 0)
+ 				hitTile.Prune();
+ 
+-			itemTime = sItem.useTime / 2;
++			ApplyItemTime(sItem, 0.5f);
+ 		}
+ 
+ 		private void ItemCheck_UseMiningTools_TryPoundingTile(Item sItem, int tileHitId, ref bool hitWall, int x, int y) {
 @@ -31719,7 +_,9 @@
  					if (!poundRelease)
  						return;
@@ -3792,6 +3832,15 @@
  			if (Main.dedServ)
  				return;
  
+@@ -35319,7 +_,7 @@
+ 
+ 		private void ItemCheck_StartActualUse(Item sItem) {
+ 			bool flag = sItem.type == 4711;
+-			if (sItem.pick > 0 || sItem.axe > 0 || sItem.hammer > 0 || flag)
++			if (sItem.pick > 0 || sItem.axe > 0 || sItem.hammer > 0 || flag || ItemLoader.IsCustomMiningTool(sItem, this))
+ 				toolTime = 1;
+ 
+ 			if (grappling[0] > -1) {
 @@ -35456,6 +_,9 @@
  		}
  

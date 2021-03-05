@@ -451,6 +451,43 @@ namespace Terraria.ModLoader
 		}
 
 		/// <summary>
+		/// Returns whether or not this item is a custom mining tool. Returns false by default.
+		/// </summary>
+		/// <param name="player">The player using the item.</param>
+		public virtual bool IsCustomMiningTool(Player player) => false;
+
+		/// <summary>
+		/// Allows specifying the area that this custom mining tool will mine on use, using the currently selected tile as its origin. 
+		/// Use the yield contextual keyword to return coordinate tuples for each tile that will be mined in the area.
+		/// Returns the origin tile by default.
+		/// </summary>
+		/// <param name="player">The player.</param>
+		/// <param name="origin">A tuple representing the origin point to mine from.</param>
+		/// <returns></returns>
+		public virtual IEnumerable<(int, int)> CustomMiningToolArea(Player player, (int x, int y) origin) {
+			yield return origin;
+		}
+
+		/// <summary>
+		/// Returns whether this custom mining tool is able to mine a given tile. Returns true by default.
+		/// </summary>
+		/// <param name="player">The player.</param>
+		/// <param name="tileID">The ID of the tile being mined.</param>
+		/// <param name="x">The x coordinate of the mined tile.</param>
+		/// <param name="y">The y coordinate of the mined tile.</param>
+		/// <returns></returns>
+		public virtual bool CanBeMinedByCustomMiningTool(Player player, int tileID, int x, int y) => true;
+
+		/// <summary>
+		/// Returns whether or not this custom mining tool uses its own mining behavior. Returns false by default.
+		/// </summary>
+		/// <param name="player">The player using the item.</param>
+		/// <param name="x">The x coordinate of the mined tile.</param>
+		/// <param name="y">The y coordinate of the mined tile.</param>
+		/// <param name="minePower">The mining power to use to mine the tile. Defaults to 100.</param>
+		public virtual bool UseCustomMiningTool(Player player, int x, int y, ref int minePower) => false;
+
+		/// <summary>
 		/// Allows you to make things happen when this item is in the player's inventory (for example, how the cell phone makes information display).
 		/// </summary>
 		/// <param name="player">The player.</param>

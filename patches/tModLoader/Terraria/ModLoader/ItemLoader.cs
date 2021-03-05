@@ -835,6 +835,36 @@ namespace Terraria.ModLoader
 			return false;
 		}
 
+		/// <summary>
+		/// Returns whether ModItem.IsCustomMiningTool returns true. Returns false if item is not a modded item.
+		/// </summary>
+		public static bool IsCustomMiningTool(Item item, Player player) {
+			return item.ModItem != null && item.ModItem.IsCustomMiningTool(player);
+		}
+
+		/// <summary>
+		/// Iterates through ModItem.CustomMiningToolArea, calls ModItem.CanBeMinedByCustomMiningTool and CustomMiningToolUse(Player player, x, y, ref minePower) for each iteration
+		/// </summary>
+		public static void UseCustomMiningTool(Player player, Item item, int oX, int oY) {
+			if (item.IsAir || item.ModItem == null)
+				return;
+				
+			foreach (var (x, y) in item.ModItem.CustomMiningToolArea(player, (oX, oY)))	{
+				Tile tile = Framing.GetTileSafely(x, y);
+				if (!tile.active())
+					continue;
+					
+				if (item.ModItem.CanBeMinedByCustomMiningTool(player, tile.type, x, y)) {
+					int minePower = 100;
+					
+					if (!item.ModItem.UseCustomMiningTool(player, x, y, ref minePower))
+						player.PickTile(x, y, minePower);
+				}
+			}
+			
+			player.ApplyItemTime(item, player.pickSpeed);
+		}
+
 		private static HookList HookUpdateInventory = AddHook<Action<Item, Player>>(g => g.UpdateInventory);
 		//place at end of first for loop in Terraria.Player.UpdateEquips
 		//  call ItemLoader.UpdateInventory(this.inventory[j], this)
