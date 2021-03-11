@@ -3677,12 +3677,12 @@
  				specialToolUsageSettings2.UsageAction = UseShovel;
  				specialToolUsageSettings = specialToolUsageSettings2;
  			}
-+			else if (ItemLoader.IsCustomMiningTool(sItem, this)) {
++			else if (ItemLoader.IsCustomTool(sItem, this)) {
 +				specialToolUsageSettings = new SpecialToolUsageSettings {
 +					IsAValidTool = true,
-+					UsageAction = ItemLoader.UseCustomMiningTool
++					UsageAction = ItemLoader.UseCustomTool
 +				};
-+			}	 
++			}
  
  			if (sItem.pick <= 0 && sItem.axe <= 0 && sItem.hammer <= 0 && !specialToolUsageSettings.IsAValidTool)
  				return;
@@ -3691,7 +3691,7 @@
  				canHitWalls = false;
  				if (sItem.hammer > 0) {
 -					num2 += sItem.hammer;
-+					TileLoader.MineDamage(sItem.hammer, ref num2);
++					TileLoader.MineDamage(tile.type, sItem.hammer, ref num2);
  					if (!WorldGen.CanKillTile(x, y))
  						num2 = 0;
  
@@ -3703,7 +3703,7 @@
 +				if (tile.type == 80)
 +					num2 += (int)(sItem.axe * 3 * 1.2f);
 +				else
-+					TileLoader.MineDamage(sItem.axe, ref num2);
++					TileLoader.MineDamage(tile.type, sItem.axe, ref num2);
  				if (sItem.axe > 0) {
  					AchievementsHelper.CurrentlyMining = true;
  					if (!WorldGen.CanKillTile(x, y))
@@ -3837,7 +3837,7 @@
  		private void ItemCheck_StartActualUse(Item sItem) {
  			bool flag = sItem.type == 4711;
 -			if (sItem.pick > 0 || sItem.axe > 0 || sItem.hammer > 0 || flag)
-+			if (sItem.pick > 0 || sItem.axe > 0 || sItem.hammer > 0 || flag || ItemLoader.IsCustomMiningTool(sItem, this))
++			if (sItem.pick > 0 || sItem.axe > 0 || sItem.hammer > 0 || flag || ItemLoader.IsCustomTool(sItem, this))
  				toolTime = 1;
  
  			if (grappling[0] > -1) {
@@ -4100,7 +4100,7 @@
 +			else if(tileTarget.type == 211)
 +				num += pickPower / 5;
 +			else
-+				TileLoader.MineDamage(pickPower, ref num);
++				TileLoader.MineDamage(tileTarget.type, pickPower, ref num);
  			if (tileTarget.type == 211 && pickPower < 200)
  				num = 0;
  

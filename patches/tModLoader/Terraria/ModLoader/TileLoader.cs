@@ -665,9 +665,8 @@ namespace Terraria.ModLoader
 		//  replace num222 += item.hammer; with TileLoader.MineDamage(item.hammer, ref num222);
 		//  replace num222 += item.axe; with TileLoader.MineDamage(item.axe, ref num222);
 		//in Terraria.Player.PickTile replace num += pickPower; with TileLoader.MineDamage(pickPower, ref num);
-		public static void MineDamage(int minePower, ref int damage) {
-			Tile target = Main.tile[Player.tileTargetX, Player.tileTargetY];
-			ModTile modTile = GetTile(target.type);
+		public static void MineDamage(int type, int minePower, ref int damage) {
+			ModTile modTile = GetTile(type);
 			damage += modTile != null ? (int)(1.2f * minePower / modTile.MineResist) : (int)(1.2f * minePower);
 		}
 		//in Terraria.Player.ItemCheck at end of else if chain setting num to 0 add

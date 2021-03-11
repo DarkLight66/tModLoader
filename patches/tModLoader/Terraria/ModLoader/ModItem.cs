@@ -451,41 +451,41 @@ namespace Terraria.ModLoader
 		}
 
 		/// <summary>
-		/// Returns whether or not this item is a custom mining tool. Returns false by default.
+		/// Returns whether or not this item is a custom tool. Returns false by default.
 		/// </summary>
 		/// <param name="player">The player using the item.</param>
-		public virtual bool IsCustomMiningTool(Player player) => false;
+		public virtual bool IsCustomTool(Player player) => false;
 
 		/// <summary>
-		/// Allows specifying the area that this custom mining tool will mine on use, using the currently selected tile as its origin. 
-		/// Use the yield contextual keyword to return coordinate tuples for each tile that will be mined in the area.
-		/// Returns the origin tile by default.
+		/// Allows specifying the area that this custom tool will mine on use, using the currently selected tile as its origin.
 		/// </summary>
-		/// <param name="player">The player.</param>
+		/// <param name="player">The player using the tool.</param>
+		/// <param name="toolArea">A collection of tile coordinates that the tool should mine on use. If left empty, the origin point will be mined by default.</param>
 		/// <param name="origin">A tuple representing the origin point to mine from.</param>
-		/// <returns></returns>
-		public virtual IEnumerable<(int, int)> CustomMiningToolArea(Player player, (int x, int y) origin) {
-			yield return origin;
+		public virtual void CustomToolArea(Player player, List<(int x, int y)> toolArea, (int x, int y) origin) {
 		}
 
 		/// <summary>
-		/// Returns whether this custom mining tool is able to mine a given tile. Returns true by default.
+		/// Returns whether this custom tool is able to mine a given tile. Returns true by default.
 		/// </summary>
-		/// <param name="player">The player.</param>
-		/// <param name="tileID">The ID of the tile being mined.</param>
-		/// <param name="x">The x coordinate of the mined tile.</param>
-		/// <param name="y">The y coordinate of the mined tile.</param>
+		/// <param name="player">The player using the tool.</param>
+		/// <param name="tile">The tile being mined.</param>
+		/// <param name="x">The x coordinate of the tile being mined.</param>
+		/// <param name="y">The y coordinate of the tile being mined.</param>
 		/// <returns></returns>
-		public virtual bool CanBeMinedByCustomMiningTool(Player player, int tileID, int x, int y) => true;
+		public virtual bool CanCustomToolMine(Player player, Tile tile, int x, int y) => true;
 
 		/// <summary>
-		/// Returns whether or not this custom mining tool uses its own mining behavior. Returns false by default.
+		/// Returns whether or not this custom tool uses its own mining behavior. Returns false by default.
 		/// </summary>
-		/// <param name="player">The player using the item.</param>
-		/// <param name="x">The x coordinate of the mined tile.</param>
-		/// <param name="y">The y coordinate of the mined tile.</param>
-		/// <param name="minePower">The mining power to use to mine the tile. Defaults to 100.</param>
-		public virtual bool UseCustomMiningTool(Player player, int x, int y, ref int minePower) => false;
+		/// <param name="player">The player using the tool.</param>
+		/// <param name="tile">The tile being mined.</param>
+		/// <param name="x">The x coordinate of the tile being mined.</param>
+		/// <param name="y">The Y coordinate of the tile being mined.</param>
+		/// <param name="pickaxe">If not using custom behavior, whether to use the pickaxe mining behavior. Defaults to true.</param>
+		/// <param name="minePower">If not using custom behavior, the mining power that will be used to mine the tile. Defaults to 100.</param>
+		/// <returns></returns>
+		public virtual bool UseCustomTool(Player player, Tile tile, int x, int y, ref bool pickaxe, ref int minePower) => false;
 
 		/// <summary>
 		/// Allows you to make things happen when this item is in the player's inventory (for example, how the cell phone makes information display).

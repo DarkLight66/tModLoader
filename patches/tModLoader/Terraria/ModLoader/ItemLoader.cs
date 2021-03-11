@@ -9,6 +9,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using Terraria.Audio;
 using Terraria.GameContent;
+using Terraria.GameContent.Achievements;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader.Core;
@@ -836,33 +837,85 @@ namespace Terraria.ModLoader
 		}
 
 		/// <summary>
-		/// Returns whether ModItem.IsCustomMiningTool returns true. Returns false if item is not a modded item.
+		/// Returns whether ModItem.IsCustomTool returns true. Returns false if item is not a modded item.
 		/// </summary>
-		public static bool IsCustomMiningTool(Item item, Player player) {
-			return item.ModItem != null && item.ModItem.IsCustomMiningTool(player);
+		public static bool IsCustomTool(Item item, Player player) {
+			return !item.IsAir && (item.ModItem?.IsCustomTool(player) ?? false);
 		}
 
 		/// <summary>
-		/// Iterates through ModItem.CustomMiningToolArea, calls ModItem.CanBeMinedByCustomMiningTool and CustomMiningToolUse(Player player, x, y, ref minePower) for each iteration
+		/// Calls ModItem.CustomToolArea, then calls ModItem.CanCustomToolMine and ModItem.UseCustomTool for each tile coordinate.
 		/// </summary>
-		public static void UseCustomMiningTool(Player player, Item item, int oX, int oY) {
+		public static void UseCustomTool(Player player, Item item, int oX, int oY) {
 			if (item.IsAir || item.ModItem == null)
 				return;
-				
-			foreach (var (x, y) in item.ModItem.CustomMiningToolArea(player, (oX, oY)))	{
-				Tile tile = Framing.GetTileSafely(x, y);
-				if (!tile.active())
-					continue;
-					
-				if (item.ModItem.CanBeMinedByCustomMiningTool(player, tile.type, x, y)) {
-					int minePower = 100;
-					
-					if (!item.ModItem.UseCustomMiningTool(player, x, y, ref minePower))
-						player.PickTile(x, y, minePower);
+
+			List<(int x, int y)> toolArea = new List<(int x, int y)>();
+
+			item.ModItem.CustomToolArea(player, toolArea, (oX, oY));
+
+			if (toolArea.Count == 0) {
+				MiningOperation(oX, oY);
+			}
+			else {
+				foreach (var (x, y) in toolArea) {
+					MiningOperation(x, y);
 				}
 			}
-			
-			player.ApplyItemTime(item, player.pickSpeed);
+
+			void MiningOperation(int x, int y) {
+				Tile tile = Framing.GetTileSafely(x, y);
+				if (!tile.active() || !item.ModItem.CanCustomToolMine(player, tile, x, y))
+					return;
+
+				int minePower = 100;
+				bool pickaxe = true;
+
+				if (item.ModItem.UseCustomTool(player, tile, x, y, ref pickaxe, ref minePower))
+					return;
+
+				if (pickaxe)
+					player.PickTile(x, y, minePower);
+				else
+					MineTile(player, tile.type, x, y, minePower);
+			}
+
+			player.ApplyItemTime(item);
+		}
+
+		/// <summary>
+		/// Generic tile mining code, based on vanilla's axe and hammer mining code.
+		/// </summary>
+		public static void MineTile(Player player, int type, int x, int y, int minePower) {
+			HitTile hitTile = player.hitTile;
+
+			// TODO: allow modded/vanilla tiles to have their hardness respected? Maybe add a ModTile/GlobalTile hook for overriding hardness based on tool used?
+			if (Main.tileNoFail[type])
+				minePower = 100;
+
+			if (!WorldGen.CanKillTile(x, y))
+				minePower = 0;
+
+			AchievementsHelper.CurrentlyMining = true;
+			if (hitTile.AddDamage(hitTile.HitObject(x, y, 1), minePower) >= 100) {
+				player.hitReplace.TryClearingAndPruning(x, y, 1);
+				hitTile.TryClearingAndPruning(x, y, 1);
+				WorldGen.KillTile(x, y);
+				if (Main.netMode == NetmodeID.MultiplayerClient)
+					NetMessage.SendData(MessageID.TileManipulation, -1, -1, null, 0, x, y);
+			}
+			else {
+				WorldGen.KillTile(x, y, fail: true);
+				if (Main.netMode == NetmodeID.MultiplayerClient) {
+					NetMessage.SendData(MessageID.TileManipulation, -1, -1, null, 0, x, y, 1f);
+					NetMessage.SendData(MessageID.SyncTilePicking, -1, -1, null, Main.myPlayer, x, y, minePower);
+				}
+			}
+
+			if (minePower != 0)
+				hitTile.Prune();
+
+			AchievementsHelper.CurrentlyMining = false;
 		}
 
 		private static HookList HookUpdateInventory = AddHook<Action<Item, Player>>(g => g.UpdateInventory);
