@@ -330,9 +330,11 @@ namespace Terraria.ModLoader
 		}
 
 		/// <summary>
-		/// Allows you to determine the color and transparency in which this projectile is drawn. Return null to use the default color (normally light and buff color). Returns null by default.
+		/// Allows you to determine the color and transparency in which this projectile is drawn. Return null to use the default color (normally light color before applying projectile.alpha). Returns null by default.
 		/// </summary>
-		public virtual Color? GetAlpha(Color lightColor) {
+		/// <param name="defaultColor"> The original color the projectile would be drawn in. </param>
+		/// <returns></returns>
+		public virtual Color? GetAlpha(Color defaultColor) {
 			return null;
 		}
 
