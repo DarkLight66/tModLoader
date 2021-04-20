@@ -500,16 +500,18 @@ namespace Terraria.ModLoader
 
 		private static HookList HookGetAlpha = AddHook<Func<Projectile, Color, Color?>>(g => g.GetAlpha);
 
-		public static Color? GetAlpha(Projectile projectile, Color lightColor) {
-			foreach (GlobalProjectile g in HookGetAlpha.Enumerate(projectile.globalProjectiles)) {
-				Color? color = g.GetAlpha(projectile, lightColor);
+		public static Color GetAlpha(Projectile projectile, Color defaultColor) {
+			Color modColor = projectile.ModProjectile?.GetAlpha(defaultColor) ?? defaultColor;
 
-				if (color.HasValue) {
-					return color;
+			foreach (GlobalProjectile g in HookGetAlpha.Enumerate(projectile.globalProjectiles)) {
+				Color? globalColor = g.GetAlpha(projectile, modColor);
+
+				if (globalColor.HasValue) {
+					return globalColor.Value;
 				}
 			}
 
-			return projectile.ModProjectile?.GetAlpha(lightColor);
+			return modColor;
 		}
 
 		public static void DrawOffset(Projectile projectile, ref int offsetX, ref int offsetY, ref float originX) {

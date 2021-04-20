@@ -32,7 +32,7 @@ namespace ExampleMod.Content.Projectiles
 		// Allows you to determine the color and transparency in which a projectile is drawn
 		// Return null to use the default color (normally light and buff color)
 		// Returns null by default.
-		public override Color? GetAlpha(Color lightColor) {
+		public override Color? GetAlpha(Color defaultColor) {
 			//return Color.White;
 			return new Color(255, 255, 255, 0) * (1f - (float)Projectile.alpha / 255f);
 		}

@@ -36,7 +36,7 @@ namespace ExampleMod.Content.Projectiles
 			Projectile.aiStyle = -1;
 		}
 
-		public override Color? GetAlpha(Color lightColor) {
+		public override Color? GetAlpha(Color defaultColor) {
 			return Color.White * (1f - Projectile.alpha / 255f);
 		}
 
