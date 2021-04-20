@@ -466,7 +466,7 @@
  						}
  					}
  
-+					if (!ProjectileLoader.OnTileCollide(this, lastVelocity)) {
++					if (!ProjectileLoader.OnTileCollide(this, lastVelocity, ref wetVelocity)) {
 +					}
 -					if (type == 663 || type == 665 || type == 667 || type == 677 || type == 678 || type == 679 || type == 691 || type == 692 || type == 693 || type == 688 || type == 689 || type == 690) {
 +					else if (type == 663 || type == 665 || type == 667 || type == 677 || type == 678 || type == 679 || type == 691 || type == 692 || type == 693 || type == 688 || type == 689 || type == 690) {
@@ -477,7 +477,7 @@
  			if (aiStyle == 4 || aiStyle == 38 || aiStyle == 84 || aiStyle == 148 || (aiStyle == 7 && ai[0] == 2f) || ((type == 440 || type == 449 || type == 606) && ai[1] == 1f) || (aiStyle == 93 && ai[0] < 0f) || type == 540 || type == 756 || type == 818 || type == 856 || type == 933 || ProjectileID.Sets.IsAGolfBall[type])
  				return;
  
-+			if (!ProjectileLoader.ShouldUpdatePosition(this))
++			if (!ProjectileLoader.ShouldUpdatePosition(this, ref wetVelocity))
 +				return;
 +
  			if (wet)

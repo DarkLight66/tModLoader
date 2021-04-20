@@ -166,7 +166,8 @@ namespace Terraria.ModLoader
 		/// <summary>
 		/// Whether or not this projectile should update its position based on factors such as its velocity, whether it is in liquid, etc. Return false to make its velocity have no effect on its position. Returns true by default.
 		/// </summary>
-		public virtual bool ShouldUpdatePosition() {
+		/// <param name="wetVelocity"> The projectile's velocity while moving through liquid. 50% of the original velocity in water and lava, and 25% in honey. </param>
+		public virtual bool ShouldUpdatePosition(ref Vector2 wetVelocity) {
 			return true;
 		}
 
@@ -185,8 +186,9 @@ namespace Terraria.ModLoader
 		/// <summary>
 		/// Allows you to determine what happens when this projectile collides with a tile. OldVelocity is the velocity before tile collision. The velocity that takes tile collision into account can be found with projectile.velocity. Return true to allow the vanilla tile collision code to take place (which normally kills the projectile). Returns true by default.
 		/// </summary>
-		/// <param name="oldVelocity">The velocity of the projectile upon collision.</param>
-		public virtual bool OnTileCollide(Vector2 oldVelocity) {
+		/// <param name="oldVelocity"> The velocity of the projectile upon collision. </param>
+		/// <param name="wetVelocity"> The projectile's velocity while moving through liquid, after taking tile collision into account. </param>
+		public virtual bool OnTileCollide(Vector2 oldVelocity, ref Vector2 wetVelocity) {
 			return true;
 		}
 

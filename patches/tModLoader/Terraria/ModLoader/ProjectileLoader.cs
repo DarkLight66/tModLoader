@@ -206,15 +206,16 @@ namespace Terraria.ModLoader
 			}
 		}
 
-		private static HookList HookShouldUpdatePosition = AddHook<Func<Projectile, bool>>(g => g.ShouldUpdatePosition);
+		private delegate bool DelegateShouldUpdatePosition(Projectile projectile, ref Vector2 wetVelocity);
+		private static HookList HookShouldUpdatePosition = AddHook<DelegateShouldUpdatePosition>(g => g.ShouldUpdatePosition);
 
-		public static bool ShouldUpdatePosition(Projectile projectile) {
-			if (IsModProjectile(projectile) && !projectile.ModProjectile.ShouldUpdatePosition()) {
+		public static bool ShouldUpdatePosition(Projectile projectile, ref Vector2 wetVelocity) {
+			if (IsModProjectile(projectile) && !projectile.ModProjectile.ShouldUpdatePosition(ref wetVelocity)) {
 				return false;
 			}
 
 			foreach (GlobalProjectile g in HookShouldUpdatePosition.Enumerate(projectile.globalProjectiles)) {
-				if (!g.ShouldUpdatePosition(projectile)) {
+				if (!g.ShouldUpdatePosition(projectile, ref wetVelocity)) {
 					return false;
 				}
 			}
@@ -239,17 +240,18 @@ namespace Terraria.ModLoader
 			return true;
 		}
 
-		private static HookList HookOnTileCollide = AddHook<Func<Projectile, Vector2, bool>>(g => g.OnTileCollide);
+		private delegate bool DelegateOnTileCollide(Projectile projectile, Vector2 oldVelocity, ref Vector2 wetVelocity);
+		private static HookList HookOnTileCollide = AddHook<DelegateOnTileCollide>(g => g.OnTileCollide);
 
-		public static bool OnTileCollide(Projectile projectile, Vector2 oldVelocity) {
+		public static bool OnTileCollide(Projectile projectile, Vector2 oldVelocity, ref Vector2 wetVelocity) {
 			bool result = true;
 
 			foreach (GlobalProjectile g in HookOnTileCollide.Enumerate(projectile.globalProjectiles)) {
-				result &= g.OnTileCollide(projectile, oldVelocity);
+				result &= g.OnTileCollide(projectile, oldVelocity, ref wetVelocity);
 			}
 
 			if (result && projectile.ModProjectile != null) {
-				return projectile.ModProjectile.OnTileCollide(oldVelocity);
+				return projectile.ModProjectile.OnTileCollide(oldVelocity, ref wetVelocity);
 			}
 
 			return result;

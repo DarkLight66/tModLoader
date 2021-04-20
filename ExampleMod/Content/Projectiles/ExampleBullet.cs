@@ -35,7 +35,7 @@ namespace ExampleMod.Content.Projectiles
 			AIType = ProjectileID.Bullet; //Act exactly like default Bullet
 		}
 
-		public override bool OnTileCollide(Vector2 oldVelocity) {
+		public override bool OnTileCollide(Vector2 oldVelocity, ref Vector2 wetVelocity) {
 			//If collide with tile, reduce the penetrate.
 			//So the projectile can reflect at most 5 times
 			Projectile.penetrate--;
@@ -58,6 +58,13 @@ namespace ExampleMod.Content.Projectiles
 			}
 
 			return false;
+		}
+
+		public override bool ShouldUpdatePosition(ref Vector2 wetVelocity) {
+			// This makes it so the projectile moves at normal speed through water, but not through lava or honey.
+			if (projectile.wet && !projectile.honeyWet && !projectile.lavaWet) {
+				wetVelocity = Projectile.velocity;
+			}
 		}
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor) {

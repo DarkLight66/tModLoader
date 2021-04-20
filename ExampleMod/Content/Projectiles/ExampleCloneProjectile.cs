@@ -52,7 +52,7 @@ namespace ExampleMod.Content.Projectiles
 		//Now, using CloneDefaults() and aiType doesn't copy EVERY aspect of the projectile. In Vanilla, several other methods
 		//are used to generate different effects that aren't included in AI. For the case of the Meowmete projectile, since the
 		//richochet sound is not included in the AI, we must add it ourselves:
-		public override bool OnTileCollide(Vector2 oldVelocity) {
+		public override bool OnTileCollide(Vector2 oldVelocity, ref Vector2 wetVelocity) {
 			//Since there are two Richochet sounds for the Meowmere, we can randomly choose between them like this:
 
 			SoundEngine.PlaySound(Main.rand.NextBool() ? SoundID.Item57 : SoundID.Item58, Projectile.position);
@@ -63,7 +63,7 @@ namespace ExampleMod.Content.Projectiles
 
 			//This line calls the base (empty) implementation of this hook method to return its default value, which in its case is always 'true'.
 			//Hover on the method below in VS to see its summary.
-			return base.OnTileCollide(oldVelocity);
+			return base.OnTileCollide(oldVelocity, ref wetVelocity);
 		}
 	}
 }
