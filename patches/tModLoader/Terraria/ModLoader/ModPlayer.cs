@@ -418,7 +418,6 @@ namespace Terraria.ModLoader
 
 		/// <summary>
 		/// Whether or not ammo will be consumed upon usage. Return false to stop the ammo from being depleted. Returns true by default.
-		/// If false is returned, the OnConsumeAmmo hook is never called.
 		/// </summary>
 		/// <param name="weapon"></param>
 		/// <param name="ammo"></param>
@@ -428,13 +427,14 @@ namespace Terraria.ModLoader
 		}
 
 		/// <summary>
-		/// Allows you to make things happen when ammo is consumed.
+		/// Allows you to make things happen when ammo would usually be consumed.
+		/// Called even if the ammo isn't consumed due to effects like buffs or a gun's reduced ammo consumtion properties.
 		/// Called before the ammo stack is reduced.
 		/// </summary>
-		/// <param name="weapon"></param>
-		/// <param name="ammo"></param>
-		/// <returns></returns>
-		public virtual void OnConsumeAmmo(Item weapon, Item ammo) {
+		/// <param name="weapon"> The item using the ammo. </param>
+		/// <param name="ammo"> The ammo being used. </param>
+		/// <param name="consumed"> Whether the ammo will be consumed or not. </param>
+		public virtual void OnConsumeAmmo(Item weapon, Item ammo, bool consumed) {
 		}
 
 		/// <summary>

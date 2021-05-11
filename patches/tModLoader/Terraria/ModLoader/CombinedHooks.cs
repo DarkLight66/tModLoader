@@ -59,6 +59,11 @@ namespace Terraria.ModLoader
 			return PlayerHooks.ConsumeAmmo(player, item, ammo) && ItemLoader.ConsumeAmmo(item, ammo, player);
 		}
 
+		public static void OnConsumeAmmo(Player player, Item item, Item ammo, bool consumed) {
+			PlayerHooks.OnConsumeAmmo(player, item, ammo, consumed);
+			ItemLoader.OnConsumeAmmo(item, ammo, player, consumed);
+		}
+
 		public static bool? CanPlayerHitNPCWithItem(Player player, Item item, NPC npc) {
 			bool? result = null;
 

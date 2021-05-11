@@ -233,10 +233,14 @@ namespace Terraria.ModLoader
 		}
 
 		/// <summary>
-		/// Allows you to make things happen when ammo is consumed. Called both by the gun and by the ammo.
+		/// Allows you to make things happen when ammo would usually be consumed. Called both by the gun and by the ammo.
+		/// Called even if the ammo isn't consumed due to effects like buffs or a gun's reduced ammo consumtion properties.
 		/// Called before the ammo stack is reduced.
 		/// </summary>
-		public virtual void OnConsumeAmmo(Item item, Player player) {
+		/// <param name="item"> Could either be the gun or the ammo. </param>
+		/// <param name="player"> The player. </param>
+		/// <param name="consumed"> Whether the ammo will be consumed or not. </param>
+		public virtual void OnConsumeAmmo(Item item, Player player, bool consumed) {
 		}
 
 		/// <summary>

@@ -54,6 +54,21 @@ namespace ExampleMod.Content.Items.Weapons
 			return false; // Return false because we don't want tModLoader to shoot projectile
 		}
 
+		public override void OnConsumeAmmo(Player player, bool consumed) {
+			if (consumed) {
+				// Have a 1 in 50 (2%) chance of applying the rage buff for 5 seconds when this gun consumes ammo when shooting.
+				if (Main.rand.NextBool(50)) {
+					player.AddBuff(BuffID.Rage, 300);
+				}
+			}
+			else {
+				// Have a 1 in 5 (20%) chance of applying the wrath buff for 10 seconds when this gun doesn't consume ammo when shooting (due to buffs or equipment effects).
+				if (Main.rand.NextBool(5)) {
+					player.AddBuff(BuffID.Wrath, 600);
+				}
+			}
+		}
+
 		// Please see Content/ExampleRecipes.cs for a detailed explanation of recipe creation.
 		public override void AddRecipes() {
 			CreateRecipe()

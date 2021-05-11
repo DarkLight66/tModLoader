@@ -564,23 +564,23 @@ namespace Terraria.ModLoader
 			return true;
 		}
 
-		private static HookList HookOnConsumeAmmo = AddHook<Action<Item, Player>>(g => g.OnConsumeAmmo);
+		private static HookList HookOnConsumeAmmo = AddHook<Action<Item, Player, bool>>(g => g.OnConsumeAmmo);
 		/// <summary>
 		/// Calls ModItem.OnConsumeAmmo for the weapon, ModItem.OnConsumeAmmo for the ammo, then each GlobalItem.OnConsumeAmmo hook for the weapon and ammo.
 		/// </summary>
-		public static void OnConsumeAmmo(Item item, Item ammo, Player player) {
+		public static void OnConsumeAmmo(Item item, Item ammo, Player player, bool consumed) {
 			if (item.IsAir)
 				return;
 
-			item.ModItem?.OnConsumeAmmo(player);
-			ammo.ModItem?.OnConsumeAmmo(player);
+			item.ModItem?.OnConsumeAmmo(player, consumed);
+			ammo.ModItem?.OnConsumeAmmo(player, consumed);
 
 			foreach (var g in HookOnConsumeAmmo.Enumerate(item.globalItems)) {
-				g.OnConsumeAmmo(item, player);
+				g.OnConsumeAmmo(item, player, consumed);
 			}
 
 			foreach (var g in HookOnConsumeAmmo.Enumerate(ammo.globalItems)) {
-				g.OnConsumeAmmo(item, player);
+				g.OnConsumeAmmo(ammo, player, consumed);
 			}
 		}
 
